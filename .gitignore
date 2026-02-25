@@ -1,0 +1,86 @@
+# PlatformIO
+.pio/
+
+# Compiled object files and libraries
+*.o
+*.obj
+*.slo
+*.lo
+*.a
+*.lib
+*.lai
+*.la
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+a.out
+
+# Linker, coverage, and debug files
+*.gcno
+*.gcda
+*.gcov
+*.ilk
+*.pdb
+*.dwo
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Fortran module files
+*.mod
+*.smod
+
+# Build directories
+build/
+Build/
+build-*/
+cmake-build*/
+cmake-build-debug/
+bin/
+out/
+
+# CMake files and generated build outputs
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+Makefile
+Makefile*
+compile_commands.json
+
+# Test output and cache
+Testing/
+.cache/
+
+# Temporary and log files
+*.log
+*.tmp
+*.bak
+*.swp
+*.d
+
+# IDE/editor settings
+.vscode/
+.vs/
+.idea/
+*.suo
+*.user
+*.vcxproj*
+
+# macOS
+.DS_Store
+*.dSYM
+
+# Qt/MOC
+moc_*
+*.moc
+
+# vcpkg
+vcpkg_installed/
+
+# Miscellaneous
+tags
