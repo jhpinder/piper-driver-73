@@ -3,11 +3,14 @@
 
 #include <Arduino.h>
 
+class Hardware;
+#include "hardware.h"
+
 /// Maximum number of valve drivers on the board.
 static constexpr int MAX_VALVES = 73;
 
 // Maximum time to wait for sd card to initialize, in milliseconds
-static constexpr int SD_INIT_TIMEOUT_MS = 5000;
+static constexpr int SD_INIT_TIMEOUT_MS = 2000;
 
 // Path to the configuration file
 static constexpr const char* CONFIG_PATH = "/config.csv";
@@ -26,6 +29,12 @@ public:
    * @return 0 on success, non-zero error code on failure.
    */
   int loadFromFlash();
+
+  /**
+   * Read the configuration file from the SD card and populate the lookup tables.
+   * @return 0 on success, non-zero error code on failure.
+   */
+  int loadFromSdCard(Hardware& hw);
 
   /**
    * Look up the valve number for a given MIDI channel and note.

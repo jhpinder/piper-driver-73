@@ -194,6 +194,7 @@ void Hardware::sdEnd() { SD.end(); }
 void Hardware::printSdConfigFile() {
   File fp = SD.open(CONFIG_PATH);
   if (fp) {
+    Serial.println("Contents of config file:");
     char buffer[64];
     while (fp.available()) {
       int n = fp.readBytesUntil('\n', buffer, sizeof(buffer));

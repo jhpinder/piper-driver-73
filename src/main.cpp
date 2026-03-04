@@ -3,7 +3,7 @@
 // Written by HGP
 //
 // Uses Earle Philhower core for Raspberry Pi Pico (Arduino framework).
-// Flash must include LittleFS storage for the MIDI config file.
+// Flash must include LittleFS storage for the config file.
 // Upload config data with "Upload LittleFS to Pico" (Cmd-Shift-P).
 
 #include <Arduino.h>
@@ -24,12 +24,16 @@ static Status status(hardware);
 static bool lastSdPresent;
 static int lastDipState;
 
+static int configLoadErrors = 100;
+static bool lastConfigLoadAttemptWasSd = true;
+static bool shouldprintConfigCheck = true;
+
 // ── Arduino entry points ───────────────────────────────────────────
 
 void setup() {
   Serial.begin(115200);
   delay(3000);
-  Serial.println("\n\nPiper Driver 73 starting up...");
+  Serial.println("\n\nPiper Output Driver 73 starting up...");
 
   PinDefs::initPins();
 
@@ -44,23 +48,33 @@ void setup() {
       Serial.println("SD is present.");
       hardware.sdInit();
       hardware.printSdConfigFile();
+      configLoadErrors = config.loadFromSdCard(hardware);
+      if (configLoadErrors != 0) {
+        Serial.print("Error populating config file from SD card:");
+        Serial.println(configLoadErrors);
+      } else {
+        Serial.println("Midi tables have been configured.");
+      }
       lastSdPresent = true;
+      lastConfigLoadAttemptWasSd = true;
       break;
     } else {
-      Serial.println("SD is not present.");
+      Serial.println("SD is not present, retrying... " + String(++numTries));
       lastSdPresent = false;
     }
     delay(delayMs);
-    numTries++;
   }
 
   // Load MIDI mapping tables from LittleFS
-  int err = config.loadFromFlash();
-  if (err != 0) {
-    Serial.print("Error populating midi config file:");
-    Serial.println(err);
-  } else {
-    Serial.println("Midi tables have been configured.");
+  if (configLoadErrors) {
+    configLoadErrors = config.loadFromFlash();
+    lastConfigLoadAttemptWasSd = false;
+    if (configLoadErrors != 0) {
+      Serial.print("Error populating config file from flash:");
+      Serial.println(configLoadErrors);
+    } else {
+      Serial.println("Midi tables have been configured.");
+    }
   }
 
   // Initialise UART for RS-485 MIDI reception
@@ -91,6 +105,7 @@ void setup() {
 }
 
 void loop() {
+
   // Check for DIP switch changes
   int r = hardware.readDipSwitches();
   if (r != lastDipState) {
@@ -109,6 +124,13 @@ void loop() {
     status.showDipSwitches();
     break;
   case 2:
+    if (configLoadErrors && shouldprintConfigCheck) {
+      Serial.print("Error populating config file from ");
+      Serial.print(lastConfigLoadAttemptWasSd ? "SD card: " : "flash: ");
+      Serial.println(configLoadErrors);
+      shouldprintConfigCheck = false;
+      return;
+    }
     midi.process();
     break;
   case 3:
@@ -126,10 +148,15 @@ void loop() {
   if (sdNow && !lastSdPresent) {
     Serial.println("Card inserted");
     hardware.sdInit();
-    hardware.printSdConfigFile();
+    configLoadErrors = config.loadFromSdCard(hardware);
+    lastConfigLoadAttemptWasSd = true;
+    shouldprintConfigCheck = true;
   } else if (!sdNow && lastSdPresent) {
     hardware.sdEnd();
     Serial.println("Card removed");
+    configLoadErrors = config.loadFromFlash();
+    lastConfigLoadAttemptWasSd = false;
+    shouldprintConfigCheck = true;
   }
   lastSdPresent = sdNow;
 }
