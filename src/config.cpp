@@ -14,6 +14,7 @@ Config::Config() {
 }
 
 int Config::loadFromFlash() {
+  Serial.println("Loading MIDI configuration from flash...");
   if (!LittleFS.begin())
     return 1;
 

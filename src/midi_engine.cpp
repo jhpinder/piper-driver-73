@@ -13,6 +13,7 @@ void MidiEngine::begin() {
 
 void MidiEngine::process() {
   while (Serial1.available() >= 2) {
+    Serial.write(Serial1.peek());   // Echo the raw MIDI byte for debugging
     uint8_t byte1 = Serial1.peek(); // Peek first to check validity
     uint8_t status_nibble = (byte1 >> 4) & 0x0F;
 
@@ -30,6 +31,7 @@ void MidiEngine::process() {
     }
 
     int cmd = Serial1.read();
+    Serial.write(Serial1.peek()); // Echo the note byte for debugging
     int note = Serial1.read() & 0x7F;
     int channel = cmd & 0x0F;
     cmd = (cmd >> 4) & 0x0F;
