@@ -192,7 +192,7 @@ void Hardware::sdInit() {
 void Hardware::sdEnd() { SD.end(); }
 
 void Hardware::printSdConfigFile() {
-  File fp = SD.open("/config.csv");
+  File fp = SD.open(CONFIG_PATH);
   if (fp) {
     char buffer[64];
     while (fp.available()) {

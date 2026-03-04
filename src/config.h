@@ -9,6 +9,9 @@ static constexpr int MAX_VALVES = 73;
 // Maximum time to wait for sd card to initialize, in milliseconds
 static constexpr int SD_INIT_TIMEOUT_MS = 5000;
 
+// Path to the configuration file
+static constexpr const char* CONFIG_PATH = "/config.csv";
+
 /**
  * Manages the mapping between MIDI channel/note pairs and physical valve
  * numbers.  Tables are populated once at startup from a config file stored
@@ -19,7 +22,7 @@ public:
   Config();
 
   /**
-   * Read "config.csv" from LittleFS and populate the lookup tables.
+   * Read the configuration file from LittleFS and populate the lookup tables.
    * @return 0 on success, non-zero error code on failure.
    */
   int loadFromFlash();

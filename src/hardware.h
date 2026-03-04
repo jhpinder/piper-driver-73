@@ -1,6 +1,8 @@
 // hardware.h — Valve I/O, shift-register control, SD card, DIP switches
 #pragma once
 
+#include "config.h"
+
 #include <Arduino.h>
 #include <SD.h>
 #include <SPI.h>

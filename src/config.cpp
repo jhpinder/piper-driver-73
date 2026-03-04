@@ -20,7 +20,7 @@ int Config::loadFromFlash() {
 
   VFS.root(LittleFS);
 
-  FILE* fp = fopen("/config.csv", "r");
+  FILE* fp = fopen(CONFIG_PATH, "r");
   if (fp == nullptr)
     return 2;
 
