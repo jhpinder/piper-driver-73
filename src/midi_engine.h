@@ -1,6 +1,7 @@
 // midi_engine.h — MIDI message reception and valve dispatch
 #pragma once
 
+#include "piper-midi.h"
 #include <Arduino.h>
 
 class Config;
@@ -12,22 +13,22 @@ class Hardware;
  */
 class MidiEngine {
 public:
-    /**
-     * @param config  Reference to the MIDI configuration tables.
-     * @param hw      Reference to the hardware driver.
-     */
-    MidiEngine(const Config &config, Hardware &hw);
+  /**
+   * @param config  Reference to the MIDI configuration tables.
+   * @param hw      Reference to the hardware driver.
+   */
+  MidiEngine(const Config& config, Hardware& hw);
 
-    /** Initialise UART0 (Serial1) for RS-485 reception at 1 Mbaud. */
-    void begin();
+  /** Initialise UART0 (Serial1) for RS-485 reception at 1 Mbaud. */
+  void begin();
 
-    /**
-     * Call from loop().  If a complete 2-byte message is available,
-     * parse it and drive the corresponding valve.
-     */
-    void process();
+  /**
+   * Call from loop().  If a complete 2-byte message is available,
+   * parse it and drive the corresponding valve.
+   */
+  void process();
 
 private:
-    const Config &config_;
-    Hardware      &hw_;
+  const Config& config_;
+  Hardware& hw_;
 };
